@@ -109,11 +109,26 @@ var App = React.createClass({
        var completedCount = this.state.todos.length - activeCount;
        return (
            <div>
-               <h1>My Todo</h1>
-               <ul>
-                   <li><a href="#/active">Active({activeCount})</a></li>
-                   <li><a href="#/completed">Completed({completedCount})</a></li>
-               </ul>
+               <nav className="navbar navbar-default">
+                   <div className="container-fluid">
+                       <div className="navbar-header">
+                           <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                               <span className="sr-only">Toggle navigation</span>
+                               <span className="icon-bar"></span>
+                               <span className="icon-bar"></span>
+                               <span className="icon-bar"></span>
+                           </button>
+                           <a className="navbar-brand" href="#">Todo List</a>
+                       </div>
+                       <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                           <ul className="nav navbar-nav">
+                               <li className={this.state.page === 'active' ? 'active' : null}><a href="#/active">Active({activeCount})</a></li>
+                               <li className={this.state.page === 'completed' ? 'active' : null}><a href="#/completed">Completed({completedCount})</a></li>
+                           </ul>
+                       </div>
+                   </div>
+               </nav>
+
                {page}
                <TodoForm></TodoForm>
            </div>
