@@ -1,7 +1,5 @@
-var TodoStrage = {
-
-};
-
+var React = require('react/addons');
+var TodoStrage = require('./../strage.js');
 
 var todoList = [
     {id:'_1',name:'Buy some milk',done:true},
