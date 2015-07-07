@@ -11,10 +11,12 @@ var generateId = (function() {
 
 var todos = [{
     id: generateId(),
-    name: 'Buy some milk'
+    name: 'Buy some milk',
+    status: 0
 }, {
     id: generateId(),
-    name: 'Birthday present to Alice'
+    name: 'Birthday present to Alice',
+    status: 0
 }];
 
 var TodoStorage = assign({}, EventEmitter.prototype, {
@@ -25,7 +27,7 @@ var TodoStorage = assign({}, EventEmitter.prototype, {
         for(var i = 0; i < todos.length; i++) {
             var todo = todos[i];
             if(todo.id === id) {
-                var newTodo = React.addons.update(todo, {done: {$set: true}});
+                var newTodo = React.addons.update(todo, {status: {$set: 1}});
                 todos = React.addons.update(todos, {$splice: [[i, 1, newTodo]]});
                 this.emit('change');
                 break;
@@ -35,7 +37,8 @@ var TodoStorage = assign({}, EventEmitter.prototype, {
     create: function(name, callback) {
         var newTodo = {
             id: generateId(),
-            name: name
+            name: name,
+            status: 0
         };
         todos = React.addons.update(todos, {$push: [newTodo]});
         this.emit('change');
