@@ -1,5 +1,6 @@
 var React = require('react/addons');
 var TodoStrage = require('./strage.js');
+var Router = require('director').Router;
 
 var todoList = [
     {id:'_1',name:'Buy some milk',done:true},
@@ -51,12 +52,33 @@ var App = React.createClass({
         }.bind(this);
         TodoStrage.on('change',setTodos);
         setTodos();
+
+        var setActivePage = function(){
+            this.setState({page :'active'});
+        }.bind(this);
+        var setCompletedPage = function(){
+            this.setState({page:'completed'});
+        }.bind(this);
+        var router = Router({
+            '/active':setActivePage,
+            '/completed':setCompletedPage,
+            '*':setActivePage
+        });
+        router.init();
     },
    render: function () {
+       var page = this.state.page ==='active' ?
+           <TodoList todos={this.state.todos}></TodoList>:
+           <div>completed todos here</div>
+
        return (
            <div>
                <h1>My Todo</h1>
-               <TodoList todos={this.state.todos}></TodoList>
+               <ul>
+                   <li><a href="#/active">Active</a></li>
+                   <li><a href="#/completed">Completed</a></li>
+               </ul>
+               {page}
            </div>
        );
    }
