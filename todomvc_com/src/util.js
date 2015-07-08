@@ -1,5 +1,5 @@
 var util = function(){
-    console.log('util test2');
+    console.log('util test!');
 }
 
 module.exports = util;
