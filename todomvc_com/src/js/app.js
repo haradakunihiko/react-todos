@@ -5,20 +5,22 @@
     var TodoApp = React.createClass({
         render: function(){
             return (
-                <div>
+                <div >
                     <header>
                         <h1>TODO</h1>
                     </header>
                     <section>
-                        <button type="button"></button>
-                        <input type="text"></input>
+                        <input  type="text"></input>
                     </section>
                     <section>
+                        <button type="button"></button>
                         <ul>
                             <li>
-                                <input type="checkbox"></input>
-                                <span></span>
-                                <button type="button"></button>
+                                <div>
+                                    <input type="checkbox"></input>
+                                    <span></span>
+                                    <button type="button"></button>
+                                </div>
                             </li>
                         </ul>
                     </section>
