@@ -14,10 +14,12 @@ var Todo = React.createClass({
    render: function(){
        var todo = this.props.todo;
        var button = this.props.todo.status ===0?
-           <button onClick={this.handleClick}>Done</button>:
-           '';
+           <button className="btn btn-default pull-right" onClick={this.handleClick}>
+            <span className="glyphicon glyphicon-ok text-success"></span>
+           </button>:
+           null;
        return(
-           <li>
+           <li className="list-group-item clearfix">
                {todo.name}{button}
            </li>
        );
@@ -32,11 +34,10 @@ var TodoList = React.createClass({
                 <Todo key={todo.id} todo={todo}></Todo>
             );
         });
-        var title  = this.props.status === 0 ? 'Active' : 'Completed';
+
         return(
-            <div className="active-todos">
-                <h2>{title}</h2>
-                <ul>
+            <div>
+                <ul className="list-group">
                     {rows}
                 </ul>
             </div>
@@ -63,8 +64,12 @@ var TodoForm = React.createClass({
         var disabled = this.state.name.trim().length <=0;
         return (
             <form onSubmit={this.handleSubmit}>
-                <input value={this.state.name} onChange={this.handleNameChange} ></input>
-                <input type="submit" disabled={disabled}></input>
+                <div className="input-group">
+                    <input className="form-control" value={this.state.name} onChange={this.handleNameChange} ></input>
+                    <span className="input-group-btn">
+                        <input type="submit" className="btn btn-default" disabled={disabled}></input>
+                    </span>
+                </div>
             </form>
         );
     },
@@ -102,11 +107,22 @@ var App = React.createClass({
         router.init();
     },
    render: function () {
-       var page = this.state.page ==='active' ?
-           <TodoList todos={this.state.todos} status={0}></TodoList>:
-           <TodoList todos={this.state.todos} status={1}></TodoList>;
-        var activeCount = this.state.todos.filter(function(todo){return todo.status === 0}).length;
+
+       var page,title,form;
+
+       if(this.state.page === 'active') {
+           page = <TodoList todos={this.state.todos} status={0}></TodoList>;
+           title = 'Active todos';
+           form = <TodoForm></TodoForm>;
+       }else{
+           page = <TodoList todos={this.state.todos} status={1}></TodoList>;
+           title = 'Completed todos';
+           form = null;
+       }
+       var activeCount = this.state.todos.filter(function(todo){return todo.status === 0}).length;
        var completedCount = this.state.todos.length - activeCount;
+
+
        return (
            <div>
                <nav className="navbar navbar-default">
@@ -128,9 +144,13 @@ var App = React.createClass({
                        </div>
                    </div>
                </nav>
-
-               {page}
-               <TodoForm></TodoForm>
+                <div className="container">
+                    <div className="page-header">
+                       <h1>My todo <small>{title}</small></h1>
+                     </div>
+                    {page}
+                    {form}
+                </div>
            </div>
        );
    }
