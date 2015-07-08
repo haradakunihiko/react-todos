@@ -5,9 +5,10 @@ var watchify = require('watchify');
 var source = require('vinyl-source-stream');
 var duration = require('gulp-duration');
 var gulpUtil = require('gulp-util');
+var sass = require('gulp-sass');
 
 var buildScript = function(watch){
-    var bundler = browserify(['./src/app.js'],{
+    var bundler = browserify(['./src/js/app.js'],{
         cache:{},
         packageCache:{},
         verbose:true,
@@ -39,4 +40,14 @@ gulp.task('build:script', function() {
 });
 gulp.task('watch:script', function() {
     return buildScript(true);
+});
+
+gulp.task('watch',['watch:script','build:sass'],function(){
+    gulp.watch( './src/sass/**/*.scss', ['build:sass'] );
+});
+
+gulp.task('build:sass', function () {
+    gulp.src('./src/sass/**/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('./css'));
 });

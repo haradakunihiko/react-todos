@@ -5,5 +5,4 @@ React.render(
     <h1>TODOs</h1>,
     document.getElementById('todo-app')
 );
-
 util();
