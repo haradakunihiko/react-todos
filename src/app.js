@@ -1,26 +1,25 @@
 var React = require('react/addons');
 var TodoStrage = require('./strage.js');
 var Router = require('director').Router;
-
-var todoList = [
-    {id:'_1',name:'Buy some milk',status:0},
-    {id:'_2',name:'Birthday present for alice',status:0}
-];
+var Perf = React.addons.Perf;
 
 var Todo = React.createClass({
+    shouldComponentUpdate : function(nextProps,nextState){
+        return this.props.todo.name !== nextProps.todo.name ||
+            this.props.todo.status !== nextProps.todo.status;
+    },
     handleClick:function(){
         TodoStrage.complete(this.props.todo.id);
     },
    render: function(){
-       var todo = this.props.todo;
-       var button = this.props.todo.status ===0?
+       var button = this.props.todo.status === 0?
            <button className="btn btn-default pull-right" onClick={this.handleClick}>
             <span className="glyphicon glyphicon-ok text-success"></span>
            </button>:
            null;
        return(
            <li className="list-group-item clearfix">
-               {todo.name}
+               {this.props.todo.name}
                {button}
            </li>
        );
@@ -28,9 +27,7 @@ var Todo = React.createClass({
 });
 var TodoList = React.createClass({
     render: function(){
-        var rows = this.props.todos.filter(function(todo){
-            return todo.status == this.props.status;
-        }.bind(this)).map(function(todo){
+        var rows = this.props.todos.map(function(todo){
             return (
                 <Todo key={todo.id} todo={todo}></Todo>
             );
@@ -47,6 +44,9 @@ var TodoList = React.createClass({
 });
 
 var TodoForm = React.createClass({
+    shouldComponentUpdate:function(nextProps,nextState){
+        return this.state.name !== nextState.name;
+    },
     handleNameChange : function(e){
         this.setState({
             name: e.target.value
@@ -81,12 +81,15 @@ var TodoForm = React.createClass({
 
 var Page =React.createClass({
     render: function () {
+        var rows = this.props.todos.filter(function(todo){
+            return todo.status == this.props.pageStatus;
+        }.bind(this));
         return (
             <div className="container">
                 <div className="page-header">
                     <h1>My todo <small>{this.props.title}</small></h1>
                 </div>
-                <TodoList todos={this.props.todos} status={this.props.pageStatus}></TodoList>
+                <TodoList todos={rows}></TodoList>
                 {this.props.children}
             </div>
         );
@@ -103,7 +106,11 @@ var App = React.createClass({
     componentDidMount : function () {
         var setTodos = function () {
             TodoStrage.getAll(function (todos) {
-                this.setState({todos:todos});
+                Perf.start();
+                this.setState({todos:todos},function(){
+                    Perf.stop();
+                    Perf.printWasted();
+                });
             }.bind(this))
         }.bind(this);
         TodoStrage.on('change',setTodos);
