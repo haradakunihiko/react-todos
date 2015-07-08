@@ -34,9 +34,9 @@ var buildScript = function(watch){
     return rebundle();
 }
 
-gulp.task('build', function() {
+gulp.task('build:script', function() {
     return buildScript(false);
 });
-gulp.task('watch', function() {
+gulp.task('watch:script', function() {
     return buildScript(true);
 });
