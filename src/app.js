@@ -20,7 +20,8 @@ var Todo = React.createClass({
            null;
        return(
            <li className="list-group-item clearfix">
-               {todo.name}{button}
+               {todo.name}
+               {button}
            </li>
        );
    }
@@ -65,7 +66,7 @@ var TodoForm = React.createClass({
         return (
             <form onSubmit={this.handleSubmit}>
                 <div className="input-group">
-                    <input className="form-control" value={this.state.name} onChange={this.handleNameChange} ></input>
+                    <input className="form-control" value={this.state.name} onChange={this.handleNameChange} placeholder="input your todo!"></input>
                     <span className="input-group-btn">
                         <input type="submit" className="btn btn-default" disabled={disabled}></input>
                     </span>
@@ -77,6 +78,21 @@ var TodoForm = React.createClass({
         return {name:''};
     }
 });
+
+var Page =React.createClass({
+    render: function () {
+        return (
+            <div className="container">
+                <div className="page-header">
+                    <h1>My todo <small>{this.props.title}</small></h1>
+                </div>
+                <TodoList todos={this.props.todos} status={this.props.pageStatus}></TodoList>
+                {this.props.children}
+            </div>
+        );
+    }
+});
+
 var App = React.createClass({
     getInitialState : function(){
       return{
@@ -108,16 +124,20 @@ var App = React.createClass({
     },
    render: function () {
 
-       var page,title,form;
+       var title,form,pageStatus,activePageClass,completedPageClass;
 
        if(this.state.page === 'active') {
-           page = <TodoList todos={this.state.todos} status={0}></TodoList>;
+           pageStatus = 0;
            title = 'Active todos';
            form = <TodoForm></TodoForm>;
+           activePageClass ='active';
+           completedPageClass =null;
        }else{
-           page = <TodoList todos={this.state.todos} status={1}></TodoList>;
+           pageStatus = 1;
            title = 'Completed todos';
            form = null;
+           activePageClass = null;
+           completedPageClass ='active';
        }
        var activeCount = this.state.todos.filter(function(todo){return todo.status === 0}).length;
        var completedCount = this.state.todos.length - activeCount;
@@ -138,19 +158,15 @@ var App = React.createClass({
                        </div>
                        <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                            <ul className="nav navbar-nav">
-                               <li className={this.state.page === 'active' ? 'active' : null}><a href="#/active">Active({activeCount})</a></li>
-                               <li className={this.state.page === 'completed' ? 'active' : null}><a href="#/completed">Completed({completedCount})</a></li>
+                               <li className={activePageClass}><a href="#/active">Active({activeCount})</a></li>
+                               <li className={completedPageClass}><a href="#/completed">Completed({completedCount})</a></li>
                            </ul>
                        </div>
                    </div>
                </nav>
-                <div className="container">
-                    <div className="page-header">
-                       <h1>My todo <small>{title}</small></h1>
-                     </div>
-                    {page}
+                <Page todos={this.state.todos} pageStatus={pageStatus} title={title}>
                     {form}
-                </div>
+                </Page>
            </div>
        );
    }
