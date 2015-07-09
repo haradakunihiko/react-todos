@@ -1,6 +1,5 @@
 (function(){
     var React = require('react/addons');
-    //var util = require('./util.js');
 
     var TodoApp = React.createClass({
         render: function(){
@@ -73,4 +72,3 @@
     );
 })();
 
-//util();
